@@ -1,0 +1,3 @@
+# en este archivo le pedimos que ignore a los archivos y credenciales que dejamos abajo
+/node_modules
+.env
