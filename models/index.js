@@ -5,7 +5,7 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-//cambiamos la extencion del archivo config.jon a .js de la carpeta config y la terminacion en el directorio
+//cambiamos la extencion de json a .js aqui abajo
 const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
 

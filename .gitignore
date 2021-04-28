@@ -1,3 +1,3 @@
-# en este archivo le pedimos que ignore a los archivos y credenciales que dejamos abajo
+# estos archivos no seran subidos al repositorio
 /node_modules
 .env

@@ -4,16 +4,8 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class AccountTypes extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       // define association here
-      this.hasMany(models.Accounts, {
-        foreignKey: 'type'
-      });
     }
   };
   AccountTypes.init({
@@ -21,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.STRING
   }, {
     sequelize,
-    //esta linea sirve para poner los guiones bajos en cada palabra
+    //Agregamos esat instruccion para avitar que no lea bien los datos sin el _
     underscored: true,
     modelName: 'AccountTypes',
     tableName: "account_types"

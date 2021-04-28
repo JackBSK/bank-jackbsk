@@ -1,75 +1,63 @@
-// creamos un archivo con las credenciales para acceder a la base de datos
-// (archivo.env), para esto instalamos una dependencia "dotenv -> npm i dotenv"
-// const dotenv = require('dotenv').config(); console.log(process.env.DB_USER,
-// process.env.DB_PASSWORD, process.env.DB_NAME)
-
-require('dotenv').config();
+//Importamos express y dotenv
 const express = require('express');
-//Importar un modelo de base de datos
-const {AccountTypes, Clients, Accounts} = require('./models');
-const accounts = require('./models/accounts');
+require('dotenv').config();
 
+//Importar un modelo de base de datos
+const {AccountTypes, Clients} = require('./models');
 
 const app = express();
-
-//Agregamos el motor de plantillas ejs
-
 app.set('view engine', 'ejs');
+//CRUD -> create, read, update, delete
+//Para poder leer los datos que envia el cliente con el formato urlencode
+app.use(express.urlencoded({extended: false}));
 
-// CRUD => create,read, update, delete Para poder leer los datos que envia el
-// cliente con el formato URL encoded
-app.use(express.urlencoded({extended: false}))
-
-app.get("/", (req, res) => {
-    res.send("servidor academlo");
-});
-
-//Read
-
-app.get("/account_types", async(req, res) => {
-    let results = await AccountTypes.findAll({raw: true, nest: true, include: [{model:accounts}]});
-    console.log(results)
-    res.render('account_types', {accountTypes: results});
-});
-app.get("/accounts", async(req, res) => {
-    let results = await Clients.findAll({raw: true, nest: true, include: [{model: AccountTypes}]});
-    console.log(results)
-});
-
-app.get("/clients", async(req, res) => {
-    let results = await Clients.findAll({raw: true, include:[ {model: Accounts} ], nest: true});
-    console.log(results)
-    res.render('clients', {clients: results});
+app.get("/",(req, res) => {
+    res.send("Servidor Academlo");
 });
 
 //Create
 
-app.post("/account_types", async(req, res) => {
-    //sacar los datos que nos esta enviando el cliente
-    const {name, description, created_at, update_at} = req.body; // desestructuracion
+app.post("/account_types", async (req, res) => {
+    const {name, description, created_at, uploaded_at} = req.body;
+    let results = await AccountTypes.create({name, description, created_at, uploaded_at});
     try {
-        //Creamos un registro en la table account_types
-        let results = await AccountTypes.create({name, description, created_at, update_at});
-        //enviamos una respuesta satisfactoria
+        //creamos un registro en la tabla account_types
+        let results = await AccountTypes.create({name, description});
+        console.log(results);
+        //respuesta satisfactoria
         res.send("Se ha agregado un tipo de cuenta");
-    } catch (error) {
+    }catch(error){
         console.log(error);
-        res.send("No se ha podido agregar el tipo de cuenta")
-    }
-});
-
-app.post("/clients", async(req,res) => {
-    const{first_name, last_name, email, telephone, created_at, update_at} = req.body;
-    try{
-        let results = await Clients.create({first_name, last_name, email, telephone, created_at, update_at});
-        res.send("Se ha agregado un nuevlo cliente");
-    }catch (error) {
-        console.log("ha ocurrido un error en el envio de datos", error)
+        res.status(400).send("No se ha podido agregar el tipo de cuenta");
     }
 })
+app.post("/clients", async (req, res) => {
+    const {first_name, last_name, email, telephone, created_at, uploaded_at} = req.body;
+    let results = await Clients.create({first_name, last_name, email, telephone});
+    try {
+        //creamos un registro en la tabla account_types
+        let results = await Clients.create({first_name, last_name, email, telephone});
+        console.log(results);
+        //respuesta satisfactoria
+        res.send("Se ha agregado un nuevo cliente");
+    }catch(error){
+        console.log(error);
+        res.status(400).send("No se ha podido agregar el tipo de cuenta");
+    }
+})
+//Read
+app.get("/account_types", async (req,res) => {
+    let results = await AccountTypes.findAll({raw: true});
+    res.render('account_types', {accountTypes: results})
+});
+app.get("/clients", async (req,res) => {
+    let results = await Clients.findAll({raw: true});
+    res.render('clients', {clients: results})
+    // console.log(results)
+});
 
 const PORT = process.env.PORT || 8080;
-
+//Create server
 app.listen(PORT, () => {
-    console.log("Servidor escuchando en el puerto: ", PORT)
+    console.log("escuchando en el puerto",PORT)
 });

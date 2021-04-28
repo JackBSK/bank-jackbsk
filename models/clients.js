@@ -11,9 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasMany(models.Accounts, {
-        foreignKey: 'client_id',
-      });
     }
   };
   Clients.init({
@@ -25,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     underscored: true,
     modelName: 'Clients',
-    tableName: "clients"
+    tableName: 'clients'
   });
   return Clients;
 };

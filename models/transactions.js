@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     trans_date: DataTypes.DATE
   }, {
     sequelize,
+    underscored: true,
     modelName: 'transactions',
   });
   return transactions;
