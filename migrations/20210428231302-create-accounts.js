@@ -12,13 +12,21 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       client_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'clients',
+          key: 'id'
+        }
       },
       balance: {
         type: Sequelize.INTEGER
       },
       type: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'account_types',
+          key: 'id'
+        }
       },
       created_at: {
         allowNull: false,

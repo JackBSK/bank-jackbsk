@@ -6,6 +6,9 @@ module.exports = (sequelize, DataTypes) => {
   class AccountTypes extends Model {
     static associate(models) {
       // define association here
+      this.hasMany(models.Accounts, {
+        foreignKey: 'type'
+      });
     }
   };
   AccountTypes.init({

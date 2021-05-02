@@ -3,7 +3,7 @@ const express = require('express');
 require('dotenv').config();
 
 //Importar un modelo de base de datos
-const {AccountTypes, Clients} = require('./models');
+const {AccountTypes, Clients, Accounts} = require('./models');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -47,13 +47,23 @@ app.post("/clients", async (req, res) => {
 })
 //Read
 app.get("/account_types", async (req,res) => {
-    let results = await AccountTypes.findAll({raw: true});
-    res.render('account_types', {accountTypes: results})
+    let accountTypes = await AccountTypes.findAll({include: [{model: Accounts}]});
+    res.send(JSON.stringify(accountTypes.map(account => account.get({plain: true}))));
+    // let results = await AccountTypes.findAll({raw: true, nest: true, include: [{model: Accounts}]});
+    // console.log(results)
+    // res.render('account_types', {accountTypes: results})
+});
+app.get("/accounts", async (req,res) => {
+    // let accounts = await Accounts.findAll({inlcude: [{model: AccountTypes}, {model: Clients}]});
+    // res.send(JSON.stringify(accounts));
+    let results = await Accounts.findAll({raw: true, nest: true, include: [{model: AccountTypes}, {model: Clients}]});
+    console.log(results)
+    res.render('accounts', {accounts: results})
 });
 app.get("/clients", async (req,res) => {
-    let results = await Clients.findAll({raw: true});
-    res.render('clients', {clients: results})
-    // console.log(results)
+    let clients = await Clients.findAll({include: [{model: Accounts}]});
+    res.render('clients')
+    res.send(JSON.stringify(clients.map(client => client.get({plain: true}))));
 });
 
 const PORT = process.env.PORT || 8080;
